@@ -25,6 +25,9 @@ NORMAL_ITEMS = ["Pice of Heart", "Twenty Rupees", "Three Hundred Rupees", "Three
 
 NON_DUNGEON_ITEMS = UNIQUE_ITEMS + OTHER_INTERESTING_ITEMS + NORMAL_ITEMS
 
+#Elastic ID - needs to be unique for all items
+id = 1
+
 for filename in os.listdir("spoilers"):
     #seed dependent info
     SPOILER_DATA = json.load(open("spoilers/" + filename))
@@ -33,7 +36,6 @@ for filename in os.listdir("spoilers"):
 
 
     #Loop through all items and create documents for their data
-    id = 1
     for section, value in SPOILER_DATA.items():
         if(section != "Special" and section != "playthrough" and section != "meta" and section != "Castle Tower"):
             for chest, item in sorted(value.items()):
