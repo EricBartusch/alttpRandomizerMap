@@ -33,7 +33,7 @@ NON_DUNGEON_ITEMS = UNIQUE_ITEMS + OTHER_INTERESTING_ITEMS + NORMAL_ITEMS
 for section, value in SPOILER_DATA.items():
     if(section != "Special" and section != "playthrough" and section != "meta" and section != "Castle Tower"):
         for chest, item in value.items():
-            if(item in non_dungeon_items):
+            if(item in NON_DUNGEON_ITEMS):
                 document = {}
                 document["seed"] = SEED
                 document["item"] = item
@@ -41,5 +41,6 @@ for section, value in SPOILER_DATA.items():
                 document["progression"] = item in PROGRESSIVE_ITEMS
                 document["unique"] = item in UNIQUE_ITEMS
                 document["attributes"] = ATTRIBUTE_MAP[chest]
-                with open("documents/" + str(SEED) + "-" + chest, "w", encoding='utf-8') as doc:
+                chestTrimmed = chest.replace("'", "").replace(" ", "")
+                with open("documents/" + str(SEED) + "-" + chestTrimmed + ".json", "w", encoding='utf-8') as doc:
                     json.dump(document, doc, sort_keys=True, indent=4)
