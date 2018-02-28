@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import argparse
 import createAttributeMap
 import getProgressiveItems
 from collections import OrderedDict
@@ -10,9 +11,14 @@ def get_seed(spoiler_data):
         if(section == "meta"):
             return value["seed"]  
 
-doNormalItems = sys.argv[1]
-doDungeonItems = sys.argv[2]
-    
+parser = argparse.ArgumentParser()
+parser.add_argument('--doNormalItems')
+parser.add_argument('--doDungeonItems')
+args = parser.parse_args()
+
+doNormalItems = int(args.doNormalItems)
+doDungeonItems = int(args.doDungeonItems)
+
     
 #Consistent information
 ATTRIBUTE_MAP = createAttributeMap.create_attribute_map()
@@ -36,7 +42,6 @@ for filename in os.listdir("spoilers"):
     SPOILER_DATA = json.load(open("spoilers/" + filename))
     PROGRESSIVE_ITEMS = getProgressiveItems.get_progressive_items(SPOILER_DATA)
     SEED = get_seed(SPOILER_DATA)
-
 
     if doNormalItems:
         itemId = 0
