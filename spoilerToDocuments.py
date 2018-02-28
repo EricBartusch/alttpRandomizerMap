@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import createAttributeMap
 import getProgressiveItems
 from collections import OrderedDict
@@ -9,6 +10,10 @@ def get_seed(spoiler_data):
         if(section == "meta"):
             return value["seed"]  
 
+doNormalItems = sys.argv[1]
+doDungeonItems = sys.argv[2]
+    
+    
 #Consistent information
 ATTRIBUTE_MAP = createAttributeMap.create_attribute_map()
 UNIQUE_ITEMS = ["Pegasus Boots", "Magic Powder", "Progessive Armor", "Lamp", "Bottle", "Magical Boomerang", "Bombos", \
@@ -26,9 +31,6 @@ NORMAL_ITEMS = ["Pice of Heart", "Twenty Rupees", "Three Hundred Rupees", "Three
 NON_DUNGEON_ITEMS = UNIQUE_ITEMS + OTHER_INTERESTING_ITEMS + NORMAL_ITEMS
 
 #Elastic ID - needs to be unique for all items
-itemId = 0
-dungeonItemId = 0
-
 for filename in os.listdir("spoilers"):
     #seed dependent info
     SPOILER_DATA = json.load(open("spoilers/" + filename))
@@ -36,36 +38,51 @@ for filename in os.listdir("spoilers"):
     SEED = get_seed(SPOILER_DATA)
 
 
-    #Loop through all items and create documents for their data
-    for section, value in SPOILER_DATA.items():
-        if(section != "Special" and section != "playthrough" and section != "meta" and section != "Castle Tower"):
-            for chest, item in sorted(value.items()):
-                document = {}
-                document["seed"] = SEED
-                document["item"] = item
-                document["location"] = chest
-                document["progression"] = item in PROGRESSIVE_ITEMS
-                document["attrs"] = ATTRIBUTE_MAP[chest]
-                if(item in NON_DUNGEON_ITEMS):
-                    itemId += 1
-                    indexId = {"index" : {"_id" : itemId}}
-                    document["unique"] = item in UNIQUE_ITEMS
-                    orderedDocument = OrderedDict(document)
-                    with open("documents/" + str(SEED) + ".json", "a", encoding='utf-8') as doc:
-                        json.dump(indexId, doc)
-                        doc.write('\n')
-                        json.dump(orderedDocument, doc)
-                        doc.write('\n')
-                        doc.close()
-                else:
-                    dungeonItemId += 1
-                    dungeonIndexId = {"index" : {"_id" : dungeonItemId}}
-                    if("Big Key" in item):
-                        document["attrs"].append("Big Key")
-                    orderedDocument = OrderedDict(document)
-                    with open("dungeonDocs/" + str(SEED) + "-dungeon.json", "a", encoding='utf-8') as doc:
-                        json.dump(dungeonIndexId, doc)
-                        doc.write('\n')
-                        json.dump(orderedDocument, doc)
-                        doc.write('\n')
-                        doc.close()
+    if normalItems:
+        itemId = 0
+        for section, value in SPOILER_DATA.items():
+            if(section != "Special" and section != "playthrough" and section != "meta" and section != "Castle Tower"):
+                for chest, item in sorted(value.items()):
+                    if(item in NON_DUNGEON_ITEMS):
+                        itemId += 1
+                        indexId = {"index" : {"_id" : itemId}}
+                        document = {}
+                        document["seed"] = SEED
+                        document["item"] = item
+                        document["location"] = chest
+                        document["progression"] = item in PROGRESSIVE_ITEMS
+                        document["attrs"] = ATTRIBUTE_MAP[chest]
+                        document["unique"] = item in UNIQUE_ITEMS
+                        orderedDocument = OrderedDict(document)
+                        with open("documents/" + str(SEED) + ".json", "a", encoding='utf-8') as doc:
+                            json.dump(indexId, doc)
+                            doc.write('\n')
+                            json.dump(orderedDocument, doc)
+                            doc.write('\n')
+                            doc.close()
+                            
+    if dungeonItems:
+        dungeonIndexId = 0
+        for section, value in SPOILER_DATA.items():
+            if(section != "Special" and section != "playthrough" and section != "meta" and section != "Castle Tower"):
+                for chest, item in sorted(value.items()):
+                    if(item not in NON_DUNGEON_ITEMS):
+                        dungeonIndexId += 1
+                        indexId = {"index" : {"_id" : dungeonIndexId}}
+                        document = {}
+                        document["seed"] = SEED
+                        document["item"] = item
+                        document["location"] = chest
+                        document["progression"] = item in PROGRESSIVE_ITEMS
+                        document["attrs"] = ATTRIBUTE_MAP[chest]
+                        if("Big Key" in item):
+                            document["attrs"].append("Big Key")
+                        orderedDocument = OrderedDict(document)
+                        with open("dungeonDocs/" + str(SEED) + "-dungeon.json", "a", encoding='utf-8') as doc:
+                            json.dump(dungeonIndexId, doc)
+                            doc.write('\n')
+                            json.dump(orderedDocument, doc)
+                            doc.write('\n')
+                            doc.close()
+
+
