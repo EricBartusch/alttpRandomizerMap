@@ -38,7 +38,7 @@ for filename in os.listdir("spoilers"):
     SEED = get_seed(SPOILER_DATA)
 
 
-    if normalItems:
+    if doNormalItems:
         itemId = 0
         for section, value in SPOILER_DATA.items():
             if(section != "Special" and section != "playthrough" and section != "meta" and section != "Castle Tower"):
@@ -60,8 +60,8 @@ for filename in os.listdir("spoilers"):
                             json.dump(orderedDocument, doc)
                             doc.write('\n')
                             doc.close()
-                            
-    if dungeonItems:
+
+    if doDungeonItems:
         dungeonIndexId = 0
         for section, value in SPOILER_DATA.items():
             if(section != "Special" and section != "playthrough" and section != "meta" and section != "Castle Tower"):
