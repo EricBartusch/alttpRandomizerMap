@@ -82,8 +82,6 @@ for filename in os.listdir("spoilers"):
                         document["location"] = chest
                         document["progression"] = item in PROGRESSIVE_ITEMS
                         document["attrs"] = ATTRIBUTE_MAP[chest]
-                        if("Big Key" in item):
-                            document["attrs"].append("Big Key")
                         orderedDocument = OrderedDict(document)
                         with open("dungeonDocs/" + str(SEED) + "-dungeon.json", "a", encoding='utf-8') as doc:
                             json.dump(indexId, doc)
