@@ -9,7 +9,7 @@ def get_progressive_items(data):
                 if(type(location) is dict):
                     for chest, itemList in location.items():
                         for item in itemList.values():
-                            if("Big Key" not in item and "Crystal" not in item and "Defeat" not in item and "Pendant" not in item):
+                            if("Defeat" not in item):
                                 progressive_items.append(item)
 
     return progressive_items  
